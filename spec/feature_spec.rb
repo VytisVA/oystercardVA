@@ -8,4 +8,4 @@
 #
 # p oystercard.deduct(20)
 #
-# p oystercard
+# p oystercard.in_journey?
