@@ -1,6 +1,12 @@
 require 'oystercard'
 
 describe Oystercard do
+  
+  before(:each) do
+    @topped_up_card = described_class.new
+    @topped_up_card.top_up 10
+  end
+
   it 'has a balance of zero' do
     expect(subject.balance).to eq(0)
   end
@@ -36,14 +42,18 @@ describe Oystercard do
 
         describe '#touch_in' do
           it 'can touch in' do
-            expect { subject.touch_in }.to change{ subject.in_journey? }.from(false).to(true)
+            expect { @topped_up_card.touch_in }.to change{ @topped_up_card.in_journey? }.from(false).to(true)
+          end
+
+          it "throws an error if the balance is less than #{Oystercard::MINIMUM_AMOUNT}" do
+            expect { subject.touch_in }.to raise_error "Insufficient funds"
           end
         end
 
         describe '#touch_out' do
           it 'can touch in' do
-            subject.touch_in
-            expect { subject.touch_out }.to change{ subject.in_journey? }.from(true).to(false)
+            @topped_up_card.touch_in
+            expect { @topped_up_card.touch_out }.to change{ @topped_up_card.in_journey? }.from(true).to(false)
           end
         end
 end
