@@ -5,6 +5,9 @@ describe Oystercard do
   before(:each) do
     @topped_up_card = described_class.new
     @topped_up_card.top_up 10
+    @touched_in_card = described_class.new
+    @touched_in_card.top_up 10 
+    @touched_in_card.touch_in
   end
 
   it 'has a balance of zero' do
@@ -26,11 +29,11 @@ describe Oystercard do
   end
 
     describe '#deduct' do
-      it { is_expected.to respond_to(:deduct).with(1).argument }
+      # it { is_expected.to respond_to(:deduct).with(1).argument }
 
       it 'deducts an amount from the balance' do
         subject.top_up(20)
-        expect{ subject.deduct 3}.to change{ subject.balance }.by -3
+        expect{ subject.send(:deduct, 3) }.to change{ subject.balance }.by -3
       end
     end
 
@@ -51,9 +54,12 @@ describe Oystercard do
         end
 
         describe '#touch_out' do
-          it 'can touch in' do
-            @topped_up_card.touch_in
-            expect { @topped_up_card.touch_out }.to change{ @topped_up_card.in_journey? }.from(true).to(false)
+          it 'can touch out' do
+            expect { @touched_in_card.touch_out }.to change{ @touched_in_card.in_journey? }.from(true).to(false)
           end
+
+          it 'deducts the correct fare' do
+            expect { @touched_in_card.touch_out }.to change{ @touched_in_card.balance }.by -Oystercard::MINIMUM_FARE
+          end    
         end
 end
