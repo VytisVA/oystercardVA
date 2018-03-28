@@ -1,9 +1,9 @@
 class Station
 
-	attr_reader :station_name
+	attr_reader :name
 
 	def initialize (name = 'Aldgate')
-		@station_name = name
+		@name = name
 	end
 	
 end
