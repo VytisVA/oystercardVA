@@ -4,8 +4,10 @@
 
 # p oystercard.top_up(50)
 
+# # p oystercard
+
+# # p oystercard.deduct(30)
+
+# p oystercard.touch_in("Aldgate")
+
 # p oystercard
-
-# p oystercard.deduct(30)
-
-# p oystercard.touch_in

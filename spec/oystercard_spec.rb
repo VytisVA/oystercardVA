@@ -1,14 +1,18 @@
 require 'oystercard'
 
 describe Oystercard do
+
+  let(:station) { double('station', :station_name => 'Aldgate') }
+
   
   before(:each) do
     @topped_up_card = described_class.new
     @topped_up_card.top_up 10
     @touched_in_card = described_class.new
     @touched_in_card.top_up 10 
-    @touched_in_card.touch_in
+    @touched_in_card.touch_in(station)
   end
+
 
   it 'has a balance of zero' do
     expect(subject.balance).to eq(0)
@@ -40,17 +44,23 @@ describe Oystercard do
       describe '#in_journey?' do
         it 'is initially not in journey' do
           expect(subject).not_to be_in_journey
+          
         end
       end
 
         describe '#touch_in' do
           it 'can touch in' do
-            expect { @topped_up_card.touch_in }.to change{ @topped_up_card.in_journey? }.from(false).to(true)
+            expect { @topped_up_card.touch_in(station) }.to change{ @topped_up_card.in_journey? }.from(false).to(true)
           end
 
           it "throws an error if the balance is less than #{Oystercard::MINIMUM_AMOUNT}" do
-            expect { subject.touch_in }.to raise_error "Insufficient funds"
+            expect { subject.touch_in(station) }.to raise_error "Insufficient funds"
           end
+
+          it 'can track your journey' do
+             subject.journey_tracker = [station]
+            expect(subject.journey_tracker).to contain_exactly(station)
+          end 
         end
 
         describe '#touch_out' do
